@@ -13,7 +13,16 @@ import java.util.Scanner;
 //For S&P500, this may be related to the Great Depression, which began after the 1929 stock market crash.
 //Therefore, yes, the timing makes sense.
 // ANSWER TO PART3
-//
+// explaination:
+   
+    // My strategy buys a stock after its price has
+    // decreased for three consecutive months and
+    // then starts to rise.
+    // It sells when the price increases by at least
+    // 5% or decreases by at least 8% from the buying price.
+    // This strategy tries to buy after a price decline
+    // and make a profit during the recovery.
+    // The 8% stop-loss helps limit potential losses.
 
 
 public class StockTrader {
@@ -221,14 +230,5 @@ public class StockTrader {
 
     return "HOLD";
 }
-    // explaination:
-   
-    // My strategy buys a stock after its price has
-    // decreased for three consecutive months and
-    // then starts to rise.
-    // It sells when the price increases by at least
-    // 5% or decreases by at least 8% from the buying price.
-    // This strategy tries to buy after a price decline
-    // and make a profit during the recovery.
-    // The 8% stop-loss helps limit potential losses.
+    
 }
