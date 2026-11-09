@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
@@ -7,9 +8,12 @@ import java.util.Scanner;
 //This means the same amount of stock worth less after 2000.
 //people who bought it lose their money.
 //Q2:
-// answer later
-
+//For starbucks, the lowest price may be related to the 2008 global financial crisis.
+//During the crisis, consumers spent less money, which affected many businesses.
+//For S&P500, this may be related to the Great Depression, which began after the 1929 stock market crash.
+//Therefore, yes, the timing makes sense.
 // ANSWER TO PART3
+//
 
 
 public class StockTrader {
@@ -27,12 +31,22 @@ public class StockTrader {
          loadData(in,years,months,prices);   
          printData(years,months,prices); 
          // highest && lowest
-         int highIndex = indexOfHighest(prices);
-         System.out.println("Highest:" + years[highIndex] + " $" + prices[highIndex]);
-         int lowIndex = indexOfLowest(prices);
-         System.out.println("Lowest:" + years[lowIndex] + " $" + prices[lowIndex]);
-         //printData(indexOfLowest(prices));
          
+       
+          int highIndex = indexOfHighest(prices);
+           int lowIndex = indexOfLowest(prices);
+
+            System.out.printf("Highest: $%.2f in %s %d%n",
+            prices[highIndex],
+             monthName(months[highIndex]),
+             years[highIndex]);
+
+          System.out.printf("Lowest: $%.2f in %s %d%n",
+            prices[lowIndex],
+            monthName(months[lowIndex]),
+            years[lowIndex]);
+
+      
          // output of result
          double result = simulate(years, months, prices);
          System.out.printf("Final value: $%,.2f%n", result);
@@ -116,14 +130,105 @@ public class StockTrader {
     }
     return cash + shares * prices[prices.length - 1];
 }
-           public static String decide(double[] history, boolean holding, double boughtAt) {
+    public static String decide(double[] history, boolean holding, double boughtAt) {
 			   
-            return buyAndHold(history, holding, boughtAt);   
-           // change this line to switch strategies
+              //return buyAndHold(history, holding, boughtAt);
+              //return dipBuyer(history, holding, boughtAt);
+              //return movingAverage(history, holding, boughtAt);
+               return myStrategy(history, holding, boughtAt);
 }
       // step a
-      public static void 
+      
+        public static String buyAndHold(double[] history, boolean holding, double boughtAt) {
+    return "BUY";
+}
+
+     
       //step b
+      
+       
+    public static String dipBuyer(double[] history, boolean holding, double boughtAt) {
+    int len = history.length;
+    double today = history[len - 1];
+
+    if (holding == false) {
+        if (len >= 3) {
+            if (history[len - 1] < history[len - 2] &&
+                history[len - 2] < history[len - 3]) {
+                return "BUY";
+            }
+        }
+    } else {
+        if (today >= boughtAt * 1.10) {
+            return "SELL";
+        }
+    }
+
+    return "HOLD";
+}
+
+
       // step c
-      // my strat     
+      
+     public static String movingAverage(double[] history, boolean holding, double boughtAt) {
+    int len = history.length;
+
+    if (len < 12) {
+        return "HOLD";
+    }
+
+    double sum = 0;
+
+    for (int i = len - 12; i < len; i++) {
+        sum += history[i];
+    }
+
+    double average = sum / 12;
+    double today = history[len - 1];
+
+    if (holding == false && today > average) {
+        return "BUY";
+    } else if (holding == true && today < average) {
+        return "SELL";
+    } else {
+        return "HOLD";
+    }
+}
+
+     // my strat
+    public static String myStrategy(double[] history,
+                                boolean holding,
+                                double boughtAt){
+    int len = history.length;
+    double today = history[len - 1];
+
+    if (holding == false) {
+        if (len >= 5) {
+            if (history[len - 5] > history[len - 4] &&
+                history[len - 4] > history[len - 3] &&
+                history[len - 3] > history[len - 2] &&
+                today > history[len - 2]) {
+                return "BUY";
+            }
+        }
+    } else {
+        if (today >= boughtAt * 1.05) {
+            return "SELL";
+        } else if (today <= boughtAt * 0.92) {
+            return "SELL";
+        }
+    }
+
+    return "HOLD";
+}
+    // explaination:
+   
+    // My strategy buys a stock after its price has
+    // decreased for three consecutive months and
+    // then starts to rise.
+    // It sells when the price increases by at least
+    // 5% or decreases by at least 8% from the buying price.
+    // This strategy tries to buy after a price decline
+    // and make a profit during the recovery.
+    // The 8% stop-loss helps limit potential losses.
 }
